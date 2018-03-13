@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="/favicon.ico">
+
+		<title>Boxxy</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+		<style>
+body {
+	padding-top: 4.5rem; /* this is necessary for fixed navbar */
+}
+
+.footer {
+  position: relative;
+  bottom: 0;
+  /*width: 100%;*/
+  /* Set the fixed height of the footer here */
+  /*height: 60px;*/
+  background-color: #f5f5f5;
+}
+
+label {
+	white-space: nowrap;
+}
+
+#menu {
+	display: none;
+}
+
+.sum {
+	padding: 0.5em;
+	font-color: white;
+	font-weight: bold;
+	font-size: 2em;
+	margin: 0.5em 0 0.5em 0;
+}
+		</style>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+	</head>
+
+	<body>
+		<nav class="nav navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="tablist">
+			<a id="frontpage-link" class="nav-link navbar-brand" href="#boxxy" role="tab" data-toggle="list" data-target="#boxxy">
+				Boxxy
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div id="navbarSupportedContent" class="navbar-collapse collapse">
+				<div class="mr-auto"> <!-- avoid bug that selects all tabs on navbar collapse -->
+					<!-- nav class allows one tab to be selected at a time and remove the bullets from the children li -->
+					<!-- list-unstyled removes the bullets since it does not have the nav class -->
+					<!-- navbar-nav makes the menu responsive on navbar collapse by placing the list on vertical position but removes link colors -->
+					<ul class="navbar-nav" id="menu">
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" id="start-link" data-target="#start" aria-controls="start" aria-expanded="false">
+						Início
+						</a></li>
+						<!--<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Caixa</li>-->
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#sales" aria-controls="sales" aria-expanded="false">
+						Vendas
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#payments" aria-controls="payments" aria-expanded="false">
+						Pagamentos
+						</a></li>
+						<!--<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Empréstimos</li>-->
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#emprestimos-take" aria-controls="emprestimos-take" aria-expanded="false">
+						Pegar empréstimo
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#emprestimos-offer" aria-controls="emprestimos-offer" aria-expanded="false">
+						Oferecer empréstimo
+						</a></li>
+						<!--<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Fechamento de caixa</li>-->
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#report" aria-controls="report" aria-expanded="false">
+						Relatórios
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#balance" aria-controls="balance" aria-expanded="false">
+						Balanço
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#cash-flow" aria-controls="cash-flow" aria-expanded="false">
+						Fluxo de caixa
+						</a></li>
+						<li class="nav-item"><a href="#" class="nav-link" role="tab" data-toggle="pill" data-target="#print" aria-controls="print" aria-expanded="false">
+						Impresso
+						</a></li>
+					</ul>
+					<ul class="navbar-nav" id="menu-mgr">
+					</ul>
+				</div>
+				<form class="form-inline my-2 my-lg-0" id="login-form" onsubmit="return false;">
+					<div class="input-group">
+						<input type="text" placeholder="Usuário" class="form-control mr-sm-0" id="username">
+						<input type="password" placeholder="Senha" class="form-control mr-sm-0" id="password">
+						<button type="submit" class="btn btn-outline-success my-2 my-sm-0" onclick="do_login();">Entrar</button>
+					</div>
+				</form>
+				<form class="form-inline my-2 my-lg-0 collapse" id="logout-form" onsubmit="return false;">
+					<button type="submit" class="btn btn-outline-success my-2 my-sm-0" onclick="logout();">Logout</button>
+				</form>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="boxxy">
+					<div class="row">
+						<div class="col">
+							<div class="jumbotron">
+								<h1>Bem-vindo</h1>
+								<p>Boxxy é um sistema de gerenciamento de lojas que pode ser customizado para atender às suas necessidades específicas.</p>
+								<p>
+									<a class="btn btn-lg" href="#" role="button">Veja como functiona &raquo;</a>
+								</p>
+							</div>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/h7ArUgxtlJs" frameborder="0" allowfullscreen></iframe>
+						</div>
+						<div class="col-sm-auto">
+							<div class="main">
+								<div class="panel-heading">
+								<div class="panel-title text-center">
+										<h1 class="title">Cadastre-se</h1>
+										<hr />
+									</div>
+								</div>
+								<div class="main-login main-center">
+									<form class="form-horizontal" method="post" action="#">
+										<div class="form-group">
+											<label for="name" class="cols-sm-2 control-label">Seu Nome</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+													<input type="text" class="form-control" name="name" id="name"  placeholder="Digite seu nome"/>
+												</div>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label for="name" class="cols-sm-2 control-label">Nome da sua Empresa</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-briefcase fa" aria-hidden="true"></i></span>
+													<input type="text" class="form-control" name="company" id="company"  placeholder="Digite a empresa"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="email" class="cols-sm-2 control-label">Seu Email</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+													<input type="text" class="form-control" name="email" id="email"  placeholder="Digite seu email"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="username" class="cols-sm-2 control-label">Seu nome de usuário administrador da empresa</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+													<input type="text" class="form-control" name="username" id="username"  placeholder="Digite o usuário administrador"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="password" class="cols-sm-2 control-label">Senha</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+													<input type="password" class="form-control" name="password" id="password"  placeholder="Digite sua senha"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="confirm" class="cols-sm-2 control-label">Confirmação de Senha</label>
+											<div class="cols-sm-10">
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+													<input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirme sua senha"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group ">
+											<button type="button" class="btn btn-primary btn-lg btn-block login-button" data-toggle="modal" data-target="#captcha-modal">Registrar-se</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<footer class="footer">
+						<div class="container">
+							<p class="text-muted">Copyright (C) 2017 All rights reserved</p>
+						</div>
+					</footer>
+					<div class="modal" id="captcha-modal">
+						<form onsubmit="return false;">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Você é humano?</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p>Precisamos confirmar que você não é um robô ou um programa automatizado. Isso possibilita aumentar a segurança do nosso sistema e afastar usuários mal intencionados.</p>
+									<p><div class="g-recaptcha" data-sitekey="6LdJNSAUAAAAAL5fPN96fHBxC2F6f_TBHCThIlPC"></div></p>
+								</div>
+								<div class="modal-footer">
+									<button type="submit" class="btn btn-primary" onclick="verify_captcha();">Pronto</button>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+      
+				<div class="tab-pane fade" id="start">
+					<h1 id="welcome">Bem-vindo</h1>
+					<center><img id="photo" style="width: 40%; padding: 4em;"></center>
+				</div>
+      
+				<div class="tab-pane fade" id="sales">
+					<h1>Vendas</h1>
+					<div class="form-group">
+						<ul id="sales-list" class="list-group"></ul>
+					</div>
+					<footer class="footer">
+						<form onsubmit="return false;">
+							<div class="form-group">
+								<div>
+									<select id="sales-products" class="form-control form-group">
+									</select>
+								</div>
+								<div>
+									<input type="number" id="sales-amount" class="form-control form-group" min="0" placeholder="Quantidade">
+								</div>
+								<div class="form-group">
+									<div class="bg-info text-white sum">
+										Total: <span id="sales-total"></span>
+									</div>
+								</div>
+								<div>
+									<button type="submit" class="btn btn-primary form-group" onclick="post_sales();">Adicionar produto</button>
+								</div>
+							</div>
+						</form>
+					</footer>
+				</div>
+      
+				<div class="tab-pane fade" id="payments">
+					<h1>Pagamentos</h1>
+					<p>
+						Declare ativos que serão transferidos a outras entidades e serão subtraídos do capital de giro da empresa.
+					</p>
+					<div class="form-group">
+						<ul id="payments-list" class="list-group"></ul>
+					</div>
+					<footer class="footer">
+						<form onsubmit="return false;">
+							<div class="form-group">
+								<div>
+									<input type="text" id="payments-name" class="form-control form-group" placeholder="Nome">
+								</div>
+								<div>
+									<input type="number" id="payments-value" class="form-control form-group" min="0" step="0.01" placeholder="Valor">
+								</div>
+								<div class="bg-info text-white sum">
+									Total: <span id="payments-total"></span>
+								</div>
+								<div>
+									<button type="submit" class="btn btn-primary form-group" onclick="post_payment();">Adicionar pagamento</button>
+								</div>
+							</div>
+						</form>
+					</footer>
+				</div>
+
+				<div class="tab-pane fade" id="emprestimos-take">
+					<h1>Pegar empréstimo</h1>
+					<ul id="emprestimos-list"></ul>
+					<div class="bg-info text-white sum">
+						Total: <span id="emprestimos-total"></span>
+					</div>
+					<button type="submit" class="btn btn-primary" onclick="get_emprestimos();">Atualizar</button>
+				</div>
+
+				<div class="tab-pane fade" id="emprestimos-offer">
+					<h1>Oferecer empréstimo</h1>
+					<form class="form-signin" onsubmit="return false;">
+						<p>
+							<label for="offer-emprestimo-to" class="sr-only">Para</label>
+							<input type="text" id="offer-emprestimo-to" class="form-control" placeholder="Para" required autofocus>
+						</p>
+						<p>
+							<label for="offer-emprestimo-value" class="sr-only">Valor</label>
+							<input type="number" id="offer-emprestimo-value" class="form-control" placeholder="Valor" required>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="money-form" value="1">
+								Notas
+							</label><br>
+							<label>
+								<input type="radio" name="money-form" value="2">
+								Moedas
+							</label><br>
+							<label>
+								<input type="radio" name="money-form" value="3">
+								Misturado
+							</label><br>
+						</p>
+						<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="emprestimo_offer();">Oferecer</button>
+					</form>
+				</div>
+      
+				<div class="tab-pane fade" id="login">
+					<form class="form-signin">
+						<h2 class="form-signin-heading">Please sign in</h2>
+						<label for="inputEmail" class="sr-only">Email address</label>
+						<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+						<label for="inputPassword" class="sr-only">Password</label>
+						<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+						<div class="checkbox">
+						<label>
+							<input type="checkbox" value="remember-me"> Remember me
+						</label>
+						</div>
+						<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="report">
+					<h1>Relatórios</h1>
+					<ul id="report-list"></ul>
+					<form onsubmit="return false;">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-xs-6">
+									<select class="form-control terminals" id="report-terminal"></select>
+								</div>
+								<div class="col-xs-6">
+									<input type="number" class="form-control " id="report-value" placeholder="Valor">
+								</div>
+							</div>
+						</div>
+						<div class="bg-info text-white sum">
+							Total: <span id="reports-total"></span>
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" style="width: 100%;" value="Adicionar relatório" onclick="post_report();">
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="balance">
+					<h1>Balanço do caixa</h1>
+					<form onsubmit="return false;">
+						<div class="form-group">
+							Vendas: <span id="balance-sales"></span>
+						</div>
+						<div class="form-group">
+							Pagamentos: <span id="balance-payments"></span>
+						</div>
+						<div class="form-group">
+							Relatórios: <span id="balance-reports"></span>
+						</div>
+						<h2>Dinheiro</h2>
+						<div class="form-group">
+							<input type="number" class="form-control" id="balance-bills" min="0" placeholder="Notas">
+							<input type="number" class="form-control" id="balance-coins" min="0" placeholder="Moedas">
+							<input type="number" class="form-control" id="balance-checks" min="0" placeholder="Cheques">
+							<input type="number" class="form-control" id="balance-armored-car" min="0" placeholder="Carro forte">
+						</div>
+						<h2>Empréstimos</h2>
+						<ul id="balance-emprestimos-list" class="list-group"></ul>
+						<div class="form-group">
+							<div class="bg-info text-white sum">
+								Total:
+								<span id="total"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<input type="submit" class="btn btn-primary" style="width: 100%;" value="Salvar" onclick="balance_save();">
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="cash-flow">
+					<h1>Fluxo de caixa ("sangria de caixa")</h1>
+					<p>
+						Declare ativos que pertencem ao capital de giro da empresa.
+						Ativos declarados aqui não são subtraídos da empresa e continuam sendo líquidos.
+					</p>
+					<form onsubmit="return false;">
+						<div class="form-group">
+							<select id="cash-flow-destination" class="form-control">
+								<option>Carro-forte</option>
+								<option>Fundo de maneio</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input class="form-control" type="number" placeholder="Valor">
+						</div>
+						<div class="form-group">
+							<input class="form-control" type="number" placeholder="Código">
+						</div>
+						<div>
+							<button type="submit" class="btn btn-primary" style="width: 100%;">Adicionar envelope</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="print">
+					<h1>Impresso</h1>
+					<form onsubmit="return false;">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-xs-6">
+									<input id="print-from-date" class="form-control" type="date" placeholder="Início">
+								</div>
+								<div class="col-xs-6">
+									<button class="btn ml-sm-1" type="button" onclick="print_from_today();">Hoje</button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6">
+									<input id="print-to-date" class="form-control" type="date" placeholder="Fim">
+								</div>
+								<div class="col-xs-6">
+									<button class="btn ml-sm-1" type="button" onclick="print_to_today();">Hoje</button>
+								</div>
+							</div>
+						</div>
+						<div>
+							<button type="submit" class="btn btn-primary" style="width: 100%;" onclick="create_print();">Gerar impresso</button>
+						</div>
+					</form>
+					<div id="print-output"></div>
+				</div>
+			</div> <!-- tab content -->
+		</div> <!-- /container -->
+
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script>
+var api = "/api/market/v1"; // same domain to avoid CORS :)
+var token;
+var username;
+var products;
+var sales;
+var payments;
+var emprestimos;
+var terminals;
+var reports;
+
+function fill_terminals() {
+	var selects = document.getElementsByClassName("terminals");
+	for (i = 0; i < selects.length; i++) {
+		for (j = 0; j < terminals.length; j++) {
+			var option = document.createElement("option");
+			option.value = terminals[j].id;
+			var text = document.createTextNode(terminals[j].number);
+			option.appendChild(text);
+			selects[i].appendChild(option);
+		}
+	}
+}
+
+function add_sale(sales_list, sale) {
+	var transaction = document.createElement("li");
+	transaction.className = "list-group-item";
+	var text = document.createTextNode(sale.amount + " " + sale.product + " por R$ " + (sale.value * sale.amount).toFixed(2));
+	var remove = document.createElement("input");
+	remove.type = "button";
+	remove.className = "btn btn-danger";
+	remove.style.float = "right";
+	remove.style.padding = "0.1em";
+	remove.style.width = "2em";
+	remove.style.height = "2em";
+	remove.value = "\u2718";
+	remove.sale_id = sale.id;
+	remove.onclick = delete_sale;
+	transaction.appendChild(text);
+	transaction.appendChild(remove);
+	sales_list.appendChild(transaction);
+}
+
+function add_report(list, report) {
+	var transaction = document.createElement("li");
+	transaction.className = "list-group-item";
+	var terminal;
+	for (var i = 0; i < terminals.length; i++) {
+		if (terminals[i].id === report.terminal_id)
+			terminal = terminals[i].number;
+	}
+	var text = document.createTextNode("Terminal " + terminal + ": " + " R$ " + report.value.toFixed(2));
+	var remove = document.createElement("input");
+	remove.type = "button";
+	remove.className = "btn btn-danger";
+	remove.style.float = "right";
+	remove.style.padding = "0.1em";
+	remove.style.width = "2em";
+	remove.style.height = "2em";
+	remove.value = "\u2718";
+	remove.id = report.report_id;
+	remove.onclick = delete_report;
+	transaction.appendChild(text);
+	transaction.appendChild(remove);
+	list.appendChild(transaction);
+}
+
+function add_payment(payments_list, payment) {
+	var transaction = document.createElement("li");
+	transaction.className = "list-group-item";
+	var text = document.createTextNode(payment.description + " por R$ " + payment.value.toFixed(2));
+	var remove = document.createElement("input");
+	remove.type = "button";
+	remove.className = "btn btn-danger";
+	remove.style.float = "right";
+	remove.style.padding = "0.1em";
+	remove.style.width = "2em";
+	remove.style.height = "2em";
+	remove.value = "\u2718";
+	remove.payment_id = payment.id;
+	remove.onclick = delete_payment;
+	transaction.appendChild(text);
+	transaction.appendChild(remove);
+	payments_list.appendChild(transaction);
+}
+
+function translate_money_form(id) {
+	var money_form;
+	switch (id) {
+		case 1: money_form = "notas"; break;
+		case 2: money_form = "moedas"; break;
+		case 3: money_form = "misturado"; break;
+	}
+	return money_form;
+}
+
+function add_emprestimo(list, emprestimo) {
+	var money_form = translate_money_form(emprestimo.money_form);
+	var transaction = document.createElement("li");
+	transaction.className = "list-group-item";
+	var text = document.createTextNode("R$ " + emprestimo.value.toFixed(2) + " em " + money_form + " de " + emprestimo.from + " para " + emprestimo.to);
+	var remove = document.createElement("input");
+	remove.type = "button";
+	remove.className = "btn btn-primary";
+	remove.style.float = "right";
+	remove.style.padding = "0.1em";
+	remove.style.width = "2em";
+	remove.style.height = "2em";
+	remove.value = "\u2714";
+	remove.emprestimo_id = emprestimo.id;
+	remove.onclick = emprestimo_take;
+	transaction.appendChild(text);
+	transaction.appendChild(remove);
+	list.appendChild(transaction);
+}
+
+function add_emprestimo2(sales_list, emprestimo) {
+	switch (emprestimo.money_form) {
+		case 1: money_form = "notas"; break;
+		case 2: money_form = "moedas"; break;
+		case 3: money_form = "misturado"; break;
+	}
+	var transaction = document.createElement("li");
+	transaction.className = "list-group-item";
+	var text = document.createTextNode("R$ " + emprestimo.value.toFixed(2) + " em " + money_form + " de " + emprestimo.from);
+	var remove = document.createElement("input");
+	transaction.appendChild(text);
+	sales_list.appendChild(transaction);
+}
+
+function fill_sales() {
+	var sales_list = document.getElementById("sales-list");
+	sales_list.innerHTML = ""; // reset products from last login
+	for (i = 0; i < sales.length; i++) {
+		add_sale(sales_list, sales[i]);
+	}
+}
+
+function fill_reports() {
+	var list = document.getElementById("report-list");
+	list.innerHTML = ""; // reset products from last login
+	for (var i = 0; i < reports.length; i++) {
+		add_report(list, reports[i]);
+	}
+}
+
+function get_sales() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/sales");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && Array.isArray(xhr.response)) {
+			sales = xhr.response;
+			fill_sales();
+			update_sales();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function get_reports() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/reports");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && Array.isArray(xhr.response)) {
+			reports = xhr.response;
+			fill_reports();
+			update_reports();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function post_sales() {
+	var sales_products = document.getElementById("sales-products");
+	var selected_product = parseInt(sales_products.options[sales_products.selectedIndex].value);
+	var amount = parseInt(document.getElementById("sales-amount").value)
+	if (isNaN(amount) || amount < 1) {
+		alert("Quantidade inválida.");
+		return;
+	}
+	var json = {
+		product_id: selected_product,
+		amount: amount
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/sales");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var sales_list = document.getElementById("sales-list");
+			for (i = 0; i < products.length; i++) {
+				if (products[i].id == selected_product) {
+					// build object like sales get
+					var sale = {
+						product: products[i].name,
+						amount: amount,
+						id: xhr.response.sale_id,
+						value: products[i].value
+					};
+					sales.push(sale);
+					add_sale(sales_list, sale);
+					products[i].amount -= amount;
+					fill_products();
+					break;
+				}
+			}
+			update_sales();
+		} else {
+			alert("Falha ao adicionar venda.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+
+function delete_sale() {
+	var button = this;
+	var xhr = new XMLHttpRequest();
+	xhr.open('DELETE', api + "/sales/" + button.sale_id);
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var li = button.parentNode;
+			li.parentNode.removeChild(li);
+			for (i = 0; i < sales.length; i++) {
+				if (sales[i].id == button.sale_id)
+					sales.splice(i, 1);
+			}
+			update_sales();
+		} else {
+			alert("Falha ao remover venda.");
+		}
+	};
+	xhr.send();
+}
+
+function delete_report() {
+	var button = this;
+	var xhr = new XMLHttpRequest();
+	xhr.open('DELETE', api + "/reports/" + button.id);
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var li = button.parentNode;
+			li.parentNode.removeChild(li);
+			for (i = 0; i < reports.length; i++) {
+				if (reports[i].report_id == button.id)
+					reports.splice(i, 1);
+			}
+			update_reports();
+		} else {
+			alert("Falha ao remover venda.");
+		}
+	};
+	xhr.send();
+}
+
+function fill_payments() {
+	var payments_list = document.getElementById("payments-list");
+	payments_list.innerHTML = ""; // reset products from last login
+	for (i = 0; i < payments.length; i++) {
+		add_payment(payments_list, payments[i]);
+	}
+}
+
+function get_payments() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/payments");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && Array.isArray(xhr.response)) {
+			payments = xhr.response;
+			fill_payments();
+			update_payments();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function post_payment() {
+	var description = document.getElementById("payments-name").value;
+	var value = parseFloat(document.getElementById("payments-value").value)
+	if (isNaN(value) || value < 0) {
+		alert("Valor inválido.");
+		return;
+	}
+	var json = {
+		description: description,
+		value: value
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/payments");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var payments_list = document.getElementById("payments-list");
+			json.id = xhr.response.payment_id;
+			payments.push(json);
+			add_payment(payments_list, json);
+			update_payments();
+		} else {
+			alert("Falha ao adicionar venda.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+
+function post_report() {
+	var terminals = document.getElementById("report-terminal");
+	var selected_terminal = parseInt(terminals.options[terminals.selectedIndex].value);
+	var value = parseFloat(document.getElementById("report-value").value)
+	if (isNaN(value) || value < 0) {
+		alert("Valor inválido.");
+		return;
+	}
+	var json = {
+		terminal_id: selected_terminal,
+		value: value
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/reports");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var list = document.getElementById("report-list");
+			json.report_id = xhr.response.report_id;
+			reports.push(json);
+			add_report(list, json);
+			update_reports();
+		} else {
+			alert("Falha ao adicionar venda.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+
+function delete_payment() {
+	var button = this;
+	var xhr = new XMLHttpRequest();
+	xhr.open('DELETE', api + "/payments/" + button.payment_id);
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var li = button.parentNode;
+			li.parentNode.removeChild(li);
+			for (i = 0; i < payments.length; i++) {
+				if (payments[i].id == button.payment_id)
+					payments.splice(i, 1);
+			}
+			update_payments();
+		} else {
+			alert("Falha ao remover venda.");
+		}
+	};
+	xhr.send();
+}
+
+function fill_emprestimos() {
+	var emprestimos_list = document.getElementById("emprestimos-list");
+	emprestimos_list.innerHTML = ""; // reset products from last login
+	for (i = 0; i < emprestimos.length; i++) {
+		if (emprestimos[i].is_taken === false && emprestimos[i].to === username)
+			add_emprestimo(emprestimos_list, emprestimos[i]);
+	}
+}
+
+function fill_emprestimos2() {
+	var emprestimos_list = document.getElementById("balance-emprestimos-list");
+	emprestimos_list.innerHTML = ""; // reset products from last login
+	for (i = 0; i < emprestimos.length; i++) {
+		if (emprestimos[i].is_taken === true)
+			add_emprestimo2(emprestimos_list, emprestimos[i]);
+	}
+}
+
+function get_emprestimos() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/emprestimos");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && Array.isArray(xhr.response)) {
+			emprestimos = xhr.response;
+			fill_emprestimos();
+			fill_emprestimos2();
+			update_emprestimos();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function get_terminals() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/terminals");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && Array.isArray(xhr.response)) {
+			terminals = xhr.response;
+			fill_terminals();
+			get_reports();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function emprestimo_offer() {
+	var to = document.getElementById("offer-emprestimo-to").value;
+	var value = parseFloat(document.getElementById("offer-emprestimo-value").value)
+	if (isNaN(value) || value < 1) {
+		alert("Quantidade inválida.");
+		return;
+	}
+	var money_form_radio = document.querySelector('input[name="money-form"]:checked');
+	if (money_form_radio === null) {
+		alert("Selecione a forma de dinheiro.");
+		return;
+	}
+	var money_form = parseInt(money_form_radio.value);
+	var json = {
+		from: username,
+		to: to,
+		value: value,
+		money_form: money_form
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/emprestimos");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var emprestimos_list = document.getElementById("emprestimos-list");
+			/*add_emprestimo(emprestimos_list, json);*/
+			update_emprestimos();
+			alert("Empréstimo adicionado com sucesso.");
+		} else {
+			alert("Falha ao adicionar empréstimo.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+
+function emprestimo_take() {
+	var button = this;
+	var xhr = new XMLHttpRequest();
+	xhr.open('PUT', api + "/emprestimos");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			var li = button.parentNode;
+			li.parentNode.removeChild(li);
+		} else {
+			alert("Falha ao pegar empréstimo.");
+		}
+	};
+	xhr.send(JSON.stringify({emprestimo_id: button.emprestimo_id}));
+}
+
+function product_text(product) {
+	if (product.amount > 1)
+		return product.name + " (" + product.amount + " unidades)";
+	return product.name + " (" + product.amount + " unidade)";
+}
+
+function fill_products() {
+	var select = document.getElementById("sales-products");
+	select.innerHTML = ""; // reset products from last login
+	for (i = 0; i < products.length; i++) {
+		var option = document.createElement("option");
+		option.value = products[i].id;
+		var text = document.createTextNode(product_text(products[i]));
+		option.appendChild(text);
+		select.appendChild(option);
+	}
+}
+
+function get_products() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/products");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200) {
+			products = xhr.response;
+			fill_products();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function sales_sum() {
+	var sum = 0.0;
+	for (var i = 0; i < sales.length; i++) {
+		sum += sales[i].value * sales[i].amount;
+	}
+	return sum;
+}
+
+function payments_sum() {
+	var sum = 0.0;
+	for (var i = 0; i < payments.length; i++) {
+		sum += payments[i].value;
+	}
+	return sum;
+}
+
+function emprestimos_sum() {
+	var sum = 0.0;
+	for (var i = 0; i < emprestimos.length; i++) {
+		if (emprestimos[i].is_taken === false)
+			continue;
+		if (emprestimos[i].from === username)
+			sum -= emprestimos[i].value;
+		if (emprestimos[i].to === username)
+			sum += emprestimos[i].value;
+	}
+	return sum;
+}
+
+function reports_sum() {
+	var sum = 0.0;
+	for (var i = 0; i < reports.length; i++) {
+		sum += reports[i].value;
+	}
+	return sum;
+}
+
+function fill_balance(balance) {
+	document.getElementById("balance-bills").value = balance.bills.toFixed(2);
+	document.getElementById("balance-coins").value = balance.coins.toFixed(2);
+	document.getElementById("balance-checks").value = balance.checks.toFixed(2);
+	document.getElementById("balance-armored-car").value = balance.armored_car.toFixed(2);
+}
+
+function get_balance() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/balance");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			fill_balance(xhr.response);
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function get_profile() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/profile");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			document.getElementById("menu").style.display = "flex";
+			$(".user-name").html(xhr.response.name);
+			//$('#start').tab('show');
+			document.getElementById("welcome").innerHTML = "Bem-vindo, " + xhr.response.name + "! ☺";
+			var photo = document.getElementById("photo");
+			photo.onerror = function() {
+				this.src = "img/female-2022387.svg";
+			}
+			photo.src = "photos/" + username + ".jpg";
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send();
+}
+
+function calculate_balance() {
+	document.getElementById("balance-sales").innerHTML = sales_sum().toFixed(2);
+	document.getElementById("balance-payments").innerHTML = payments_sum().toFixed(2);
+	document.getElementById("balance-reports").innerHTML = reports_sum().toFixed(2);
+
+	var bills = parseFloat(document.getElementById("balance-bills").value)
+	if (isNaN(bills) || bills < 0) {
+		alert("Valor de notas inválido.");
+		return;
+	}
+	var coins = parseFloat(document.getElementById("balance-coins").value)
+	if (isNaN(coins) || coins < 0) {
+		alert("Valor de moedas inválido.");
+		return;
+	}
+	var checks = parseFloat(document.getElementById("balance-checks").value)
+	if (isNaN(checks) || checks < 0) {
+		alert("Valor de cheques inválido.");
+		return;
+	}
+	var armored_car = parseFloat(document.getElementById("balance-armored-car").value)
+	if (isNaN(armored_car) || armored_car < 0) {
+		alert("Valor do carro-forte inválido.");
+		return;
+	}
+	document.getElementById("total").innerHTML = "R$ " + (- ((sales_sum() - payments_sum()) + reports_sum() + emprestimos_sum()) + (bills + coins + checks + armored_car)).toFixed(2);
+}
+
+function balance_save() {
+	calculate_balance();
+	var json = {
+		balance: balance,
+		bolao: bolao,
+		bills: bills,
+		coins: coins,
+		checks: checks,
+		armored_car: armored_car
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', api + "/balance");
+	xhr.responseType = 'json';
+	xhr.setRequestHeader('X-Auth-Token', token);
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			alert("Fechamento salvo com sucesso.");
+		} else {
+			alert("Falha ao salvar fechamento.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+
+function reset_fields() {
+	products = [];
+	sales = [];
+	payments = [];
+	emprestimos = [];
+	terminals = [];
+	reports = [];
+	var currency_zero = 0;
+	$("#menu").collapse("hide");
+	$(".user-name").html("");
+	document.getElementById("frontpage-link").click();
+	document.getElementById("welcome").innerHTML = "";
+	document.getElementById("photo").src = "";
+	document.getElementById("sales-list").innerHTML = "";
+	document.getElementById("payments-list").innerHTML = "";
+	document.getElementById("emprestimos-list").innerHTML = "";
+	document.getElementById("report-list").innerHTML = "";
+	document.getElementById("balance-bills").value = currency_zero;
+	document.getElementById("balance-coins").value = currency_zero;
+	document.getElementById("balance-checks").value = currency_zero;
+	document.getElementById("balance-armored-car").value = currency_zero;
+	document.getElementById("total").value = currency_zero;
+}
+
+function do_login() {
+	username = $("#username").val();
+	var data = {
+		username: username,
+		password: $("#password").val()
+	};
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/login");
+	xhr.responseType = 'json';
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			document.getElementById("login-form").style.display = "none";
+			document.getElementById("logout-form").style.display = "flex";
+			reset_fields(); // make sure the system is in a consistent state
+			token = xhr.response.token;
+			get_profile();
+			get_products();
+			get_sales();
+			get_payments();
+			get_emprestimos();
+			get_terminals();
+			get_balance();
+			document.getElementById("start-link").click();
+		} else {
+			login_bail();
+		}
+	};
+	xhr.send(JSON.stringify(data));
+}
+
+function logout() {
+	reset_fields(); // do not store fields in memory after logging out
+	document.getElementById("menu").style.display = "none";
+	document.getElementById("login-form").style.display = "flex";
+	document.getElementById("logout-form").style.display = "none";
+}
+
+function login_bail(msg) {
+	if (msg)
+		alert(msg);
+	else
+		alert("Falha ao fazer login.");
+	logout();
+}
+
+function update_sales() {
+	document.getElementById("sales-total").innerHTML = "R$ " + sales_sum().toFixed(2);
+	calculate_balance();
+}
+
+function update_payments() {
+	document.getElementById("payments-total").innerHTML = "R$ " + payments_sum().toFixed(2);
+	calculate_balance();
+}
+
+function update_emprestimos() {
+	document.getElementById("emprestimos-total").innerHTML = "R$ " + emprestimos_sum().toFixed(2);
+	calculate_balance();
+}
+
+function update_reports() {
+	document.getElementById("reports-total").innerHTML = "R$ " + reports_sum().toFixed(2);
+	calculate_balance();
+}
+
+function print_from_today() {
+	document.getElementById('print-from-date').valueAsDate = new Date();
+}
+
+function print_to_today() {
+	document.getElementById('print-to-date').valueAsDate = new Date();
+}
+
+function create_print() {
+	/*var output = document.getElementById("print-output");
+	output.innerHTML = "";*/
+	var print_window = window.open("print.html");
+	print_window.document.close(); // necessary for IE >= 10
+	print_window.focus(); // necessary for IE >= 10*/
+	print_window.window.onload = function() {
+		var output = print_window.document.getElementById("print-output");
+		var title = document.createElement("h1");
+		var text = document.createTextNode("Vendas");
+		title.appendChild(text);
+		output.appendChild(title);
+		
+		var sales_table = document.createElement("table");
+		sales_table.className = "table";
+		var row = document.createElement("tr");
+		var header, text;
+		header = document.createElement("th");
+		text = document.createTextNode("Produto");
+		header.appendChild(text);
+		row.appendChild(header);
+		header = document.createElement("th");
+		text = document.createTextNode("Quantidade");
+		header.appendChild(text);
+		row.appendChild(header);
+		header = document.createElement("th");
+		text = document.createTextNode("Valor");
+		header.appendChild(text);
+		row.appendChild(header);
+		header = document.createElement("th");
+		text = document.createTextNode("Valor total");
+		header.appendChild(text);
+		row.appendChild(header);
+		sales_table.appendChild(row);
+		for (i = 0; i < sales.length; i++) {
+			var row = document.createElement("tr");
+			var data, text;
+			data = document.createElement("td");
+			text = document.createTextNode(sales[i].product);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(sales[i].amount);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(sales[i].value);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(sales[i].value * sales[i].amount);
+			data.appendChild(text);
+			row.appendChild(data);
+			sales_table.appendChild(row);
+		}
+		output.appendChild(sales_table);
+
+		var title = document.createElement("h1");
+		var text = document.createTextNode("Pagamentos");
+		title.appendChild(text);
+		output.appendChild(title);
+		
+		var payments_table = document.createElement("table");
+		payments_table.className = "table";
+		var row = document.createElement("tr");
+		var header, text;
+		header = document.createElement("th");
+		text = document.createTextNode("Descrição");
+		header.appendChild(text);
+		row.appendChild(header);
+		header = document.createElement("th");
+		text = document.createTextNode("Valor");
+		header.appendChild(text);
+		row.appendChild(header);
+		payments_table.appendChild(row);
+		for (i = 0; i < payments.length; i++) {
+			var row = document.createElement("tr");
+			var data, text;
+			data = document.createElement("td");
+			text = document.createTextNode(payments[i].description);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(payments[i].value);
+			data.appendChild(text);
+			row.appendChild(data);
+			payments_table.appendChild(row);
+		}
+		output.appendChild(payments_table);
+		
+		var title = document.createElement("h1");
+		var text = document.createTextNode("Empréstimos");
+		title.appendChild(text);
+		output.appendChild(title);
+		
+		var table = document.createElement("table");
+		table.className = "table";
+		var row = document.createElement("tr");
+		var header, text;
+		header = document.createElement("th");
+		text = document.createTextNode("Valor");
+		header.appendChild(text);
+		row.appendChild(header);
+		header = document.createElement("th");
+		text = document.createTextNode("Forma monetária");
+		header.appendChild(text);
+		row.appendChild(header);
+		table.appendChild(row);
+		header = document.createElement("th");
+		text = document.createTextNode("De");
+		header.appendChild(text);
+		row.appendChild(header);
+		table.appendChild(row);
+		header = document.createElement("th");
+		text = document.createTextNode("Para");
+		header.appendChild(text);
+		row.appendChild(header);
+		table.appendChild(row);
+		for (i = 0; i < emprestimos.length; i++) {
+			if (emprestimos[i].is_taken !== true)
+				break;
+			if (emprestimos[i].to !== username)
+				break;
+			var row = document.createElement("tr");
+			var data, text;
+			data = document.createElement("td");
+			text = document.createTextNode(emprestimos[i].value);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(translate_money_form(emprestimos[i].money_form));
+			data.appendChild(text);
+			row.appendChild(data);
+			table.appendChild(row);
+			data = document.createElement("td");
+			text = document.createTextNode(emprestimos[i].from);
+			data.appendChild(text);
+			row.appendChild(data);
+			data = document.createElement("td");
+			text = document.createTextNode(emprestimos[i].to);
+			data.appendChild(text);
+			row.appendChild(data);
+			table.appendChild(row);
+		}
+		output.appendChild(table);
+		
+		var title = document.createElement("h1");
+		var text = document.createTextNode("Balanço");
+		title.appendChild(text);
+		output.appendChild(title);
+		
+		var text = document.createTextNode("Notas: R$ 0,00");
+		output.appendChild(text);
+		output.appendChild(document.createElement("br"));
+		var text = document.createTextNode("Moedas: R$ 0,00");
+		output.appendChild(text);
+		output.appendChild(document.createElement("br"));
+		var text = document.createTextNode("Cheques: R$ 0,00");
+		output.appendChild(text);
+		
+		print_window.print();
+		print_window.close();
+	};
+}
+
+function verify_captcha() {
+	var el = document.getElementById("g-recaptcha-response");
+	if (el == null || el.value == "") {
+		alert("Resolva o captcha primeiro.");
+		return;
+	}
+	var g_recaptcha_response = el.value;
+	var json = {
+		g_recaptcha_response: g_recaptcha_response
+	};
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', api + "/recaptcha");
+	xhr.responseType = 'json';
+	xhr.onload = function() {
+		if (xhr.status === 200 && xhr.response.success === true) {
+			alert(":)");
+		} else {
+			alert("Falha ao verificar captcha code.");
+		}
+	};
+	xhr.send(JSON.stringify(json));
+}
+		</script>
+		<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+	</body>
+</html>
